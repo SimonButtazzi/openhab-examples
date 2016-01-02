@@ -62,12 +62,12 @@ case "$1" in
 			echo "stopped"
 		fi
         ;;
-	config)
-		echo "configuration file '$CONFIG_FILE':"
-		echo "`cat $CONFIG_FILE`"
+    config)
+	echo "configuration file '$CONFIG_FILE':"
+	echo "`cat $CONFIG_FILE`"
         ;;
-	*)
-		echo "please use\n$0 [start|stop|restart|status|config]"
-		;;
+    *)
+	echo "please use\n$0 [start|stop|restart|status|config]\nor\nservice openhab [start|stop|restart|status|config]"
+	;;
 esac
 exit 0
