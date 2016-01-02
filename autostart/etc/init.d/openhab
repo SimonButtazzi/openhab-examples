@@ -1,0 +1,73 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          starts openHAB from home
+# Required-Start:    $local_fs $network $named $portmap $remote_fs $syslog $time
+# Required-Stop:     $local_fs $network $named $portmap $remote_fs $syslog $time
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Service openHAB
+# Description:       Handler to start, stop, restart, show status and configuration of openHAB Service
+### END INIT INFO
+# Author:			 Simon Buttazzi
+#
+#
+# should be placed in /etc/init.d/openhab
+
+CONFIG_FILE="/etc/default/openhab.conf"
+PID_FILE="/var/run/openhab.pid"
+
+if test -f $CONFIG_FILE; then
+    . $CONFIG_FILE
+else
+    echo "Please set OPENHABPATH in $CONFIG_FILE"
+    exit 1
+fi
+
+# Aktionen
+case "$1" in
+    restart)
+        echo "restarting openHAB"
+        $0 stop
+		$0 start
+		;;
+    start)
+        if [ -f $PID_FILE ]; then
+                echo "openHAB seems to run allready. Please use parameter 'restart'"
+        else
+
+                cd $OPENHABPATH
+                # get path to equinox jar inside $OPENHABPATH folder
+                cp=$(find ./server -name "org.eclipse.equinox.launcher_*.jar" | sort | tail -1);
+
+                echo Launching the openHAB runtime..
+                java -Dosgi.clean=true -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Djetty.port=$HTTP_PORT -Djetty.port.ssl=$HTTPS_PORT -Djetty.home=. -Dlogback.configurationFile=configurations/logback.xml -Dfelix.fileinstall.dir=addons -Djava.library.path=lib -Djava.security.auth.login.config=./etc/login.conf -Dorg.quartz.properties=./etc/quartz.properties -Dequinox.ds.block_timeout=240000 -Dequinox.scr.waitTimeOnBlock=60000 -Djava.awt.headless=true -jar $cp -console &> /dev/null
+
+                echo $! > $PID_FILE
+        fi
+        ;;
+    stop)
+		echo "stopping openHAB"
+		if [ -f $PID_FILE ]; then
+			
+			kill `cat $PID_FILE`
+			rm $PID_FILE
+		else
+			echo "openHAB was not running"
+		fi
+        ;;
+    status)
+		if [ -f $PID_FILE ]; then
+			echo "running. PID:`cat $PID_FILE`"
+		else
+			echo "stopped"
+		fi
+        ;;
+	config)
+		echo "configuration file '$CONFIG_FILE':"
+		echo "`cat $CONFIG_FILE`"
+        ;;
+	*)
+		echo "please use\n$0 [start|stop|restart|status|config]"
+		;;
+esac
+exit 0
