@@ -1,0 +1,9 @@
+# PATH TO OPENHAB
+OPENHABPATH=/opt/openhab
+
+# set ports for HTTP(S) server
+# 8080 http-alt often used for webcaches, proxies, ...
+# 8443 might conflict with SW Soft Plesk Control Panel, Apache Tomcat SSL, Promise WebPAM SSL, LiveConfig
+
+HTTP_PORT=8080
+HTTPS_PORT=8443
