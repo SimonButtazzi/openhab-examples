@@ -13,7 +13,7 @@
 #
 # should be placed in /etc/init.d/openhab
 
-CONFIG_FILE="/etc/default/openhab.conf"
+CONFIG_FILE="/etc/default/openhab"
 PID_FILE="/var/run/openhab.pid"
 
 if test -f $CONFIG_FILE; then
