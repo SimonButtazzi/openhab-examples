@@ -1,0 +1,5 @@
+Group DDNS "DynDNS"
+
+String Internet_Ip "IP-Adresse extern [%s]" (DDNS)
+DateTime Internet_Ip_Update "letztes DNS Update [%1$tY-%1$tm-%1$td %1$tH:%1$tM]" (DDNS)
+

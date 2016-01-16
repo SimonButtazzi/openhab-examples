@@ -1,0 +1,16 @@
+import org.openhab.model.script.actions.Timer
+import org.openhab.core.library.types.*
+
+rule "DDNS_Trigger"
+when
+	 Time cron "20 /3 * * * ?"
+then
+	executeCommandLine("/opt/openhab/configurations/scripts/ddns-update.sh", 30000) 
+end
+
+rule "DDNS_Update"
+when
+	Item Internet_Ip changed
+then
+	Internet_Ip_Update.postUpdate(new DateTimeType())
+end
